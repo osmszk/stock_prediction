@@ -9,6 +9,8 @@ def should_buy_priod(date_str)
 end
 
 csv_data = CSV.read('rawdata_sp500.csv', headers: true)
+csv_vix_data = CSV.read('rawdata_vix.csv', headers: true)
+
 puts "start..."
 
 new_data = []
@@ -20,16 +22,26 @@ csv_data.reverse_each do |data|
   new_data.push(hash)
 end
 
+k = 0
+csv_vix_data.reverse_each do |data|
+  close_str = data["Close"]
+  hash = new_data[k]
+  hash["Vix"] = close_str
+  new_data[k] = hash
+  k = k + 1
+end
+
 base = new_data[0]["Close"].to_f
 
 File.open("output_sp500.csv", 'w') do |file|
-  file.write("Date,Value,Ratio,HALF_YEAR\n")
+  file.write("Date,Value,Ratio,HALF_YEAR,VIX\n")
   i = 0
   temp_half_year = ""
   temp_ratio = 100.0
   new_data.each do |data|
     value = data["Close"].to_f
     date_str = data["Date"]
+    vix = data["Vix"].to_f
     ratio = (value - base) / base * 100.0 + 100.0
 
     if i > 0 && should_buy_priod(date_str)
@@ -46,7 +58,7 @@ File.open("output_sp500.csv", 'w') do |file|
       half_year = "100.0"
     end
 
-    intro_msg = "#{date_str},#{value},#{ratio},#{half_year}\n"
+    intro_msg = "#{date_str},#{value},#{ratio},#{half_year},#{vix}\n"
     temp_half_year = half_year
     temp_ratio = ratio
     puts intro_msg
