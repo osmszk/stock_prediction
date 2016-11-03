@@ -12,11 +12,15 @@ csv_data.reverse_each do |data|
   new_data.push(hash)
 end
 
+base = new_data[0]["Close"].to_f
+
 File.open("output_sp500.csv", 'w') do |file|
-  file.write("Date,Close\n")
+  file.write("Date,Index,Ratio\n")
   index = 0
   new_data.each do |data|
-    intro_msg = "#{data["Date"]},#{data["Close"]}\n"
+    value = data["Close"].to_f
+    ratio = (value - base) / base * 100.0 + 100.0 
+    intro_msg = "#{data["Date"]},#{value},#{ratio}\n"
     puts intro_msg
     file.write(intro_msg)
     index = index + 1
