@@ -34,12 +34,14 @@ end
 base = new_data[0]["Close"].to_f
 
 File.open("output_sp500.csv", 'w') do |file|
-  file.write("Date,Value,Ratio,HALF_YEAR,VIX_STS\n")
+  file.write("Date,Value,Ratio,HALF_YEAR,VIX_STS,VIX_VAL\n")
+  # S&P500value	S&P500	半年投資(4月〜翌11月)	半年投資+VIX26	VIX
   i = 0
   temp_half_year = ""
   temp_ratio = 100.0
   temp_vix_sts = 100.0
-  temp_vix = 20.0
+  temp_vix_value = 12.0
+
   new_data.each do |data|
     value = data["Close"].to_f
     date_str = data["Date"]
@@ -52,8 +54,8 @@ File.open("output_sp500.csv", 'w') do |file|
       half_year = (ratio - prev_ratio) / prev_ratio * prev_half_year + prev_half_year
       # puts "should buy! #{date_str} "
 
-      prev_vix = temp_vix
-      if vix_value > 26.0
+      prev_vix_value = temp_vix_value
+      if prev_vix_value > 26.0
         #not hold
         vix_sts = temp_vix_sts.to_f
       else
@@ -74,10 +76,11 @@ File.open("output_sp500.csv", 'w') do |file|
       vix_sts = "100.0"
     end
 
-    intro_msg = "#{date_str},#{value},#{ratio},#{half_year},#{vix_sts}\n"
+    intro_msg = "#{date_str},#{value},#{ratio},#{half_year},#{vix_sts},#{vix_value}\n"
     temp_half_year = half_year
     temp_ratio = ratio
     temp_vix_sts = vix_sts
+    temp_vix_value = vix_value
     puts intro_msg
     file.write(intro_msg)
     i = i + 1
