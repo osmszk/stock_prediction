@@ -55,7 +55,7 @@ File.open("output_sp500.csv", 'w') do |file|
       # puts "should buy! #{date_str} "
 
       prev_vix_value = temp_vix_value
-      if prev_vix_value > 26.0
+      if vix_value > 26.0
         #not hold
         vix_sts = temp_vix_sts.to_f
       else
