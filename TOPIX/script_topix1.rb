@@ -22,7 +22,7 @@ end
 csv_data = CSV.read('output_topix1.csv', headers: true)
 puts "start..."
 
-File.open("output_topix_test.csv", 'w') do |file|
+File.open("output_topix_result.csv", 'w') do |file|
   file.write("Date,Close,TOPIX,HALF_YEAR\n")
   index = 0
   temp_half_year = ""
