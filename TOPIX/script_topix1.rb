@@ -22,19 +22,19 @@ end
 csv_data = CSV.read('output_topix1.csv', headers: true)
 puts "start..."
 
-File.open("output_topix_result2.csv", 'w') do |file|
+File.open("output_topix_result3.csv", 'w') do |file|
   file.write("Date,Close,TOPIX,HALF_YEAR\n")
-  index = 0
+  i = 0
   temp_half_year = ""
   csv_data.each do |data|
     date_str = data["Date"] # "1996/1/4"
-    if index > 0 && should_buy_priod(date_str)
-      prev_topix = csv_data[index-1]["TOPIX"].to_f
+    if i > 0 && should_buy_priod(date_str)
+      prev_ratio = csv_data[i-1]["TOPIX"].to_f
       prev_half_year = temp_half_year.to_f
-      topix = data["TOPIX"].to_f
-      half_year = (topix - prev_topix) / topix * prev_half_year + prev_half_year
+      ratio = data["TOPIX"].to_f
+      half_year = (ratio - prev_ratio) / prev_ratio * prev_half_year + prev_half_year
       # puts "should buy! #{date_str} "
-    elsif index > 0 && !should_buy_priod(date_str)
+    elsif i > 0 && !should_buy_priod(date_str)
       prev_half_year = temp_half_year.to_f
       half_year = temp_half_year.to_f
       # puts "should NOT buy! #{date_str} "
@@ -45,7 +45,7 @@ File.open("output_topix_result2.csv", 'w') do |file|
     temp_half_year = half_year
     # puts intro_msg
     file.write(intro_msg)
-    index = index + 1
+    i = i + 1
   end
 end
 
