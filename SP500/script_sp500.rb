@@ -1,6 +1,7 @@
 require 'csv'
 require 'date'
 
+# 半年投資がワークするかの検証
 
 def should_buy_priod(date_str)
   date = DateTime.parse(date_str)
