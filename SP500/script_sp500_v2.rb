@@ -3,8 +3,8 @@ require 'date'
 
 # 1,2月のパフォーマンスを検証(1,2月は売ったほうがいいのか？)
 
-OUTPUT_MONTH = 2
-OUTPUT_FILE_NAME = "output_sp500_v2_feb_2.csv"
+OUTPUT_MONTH = 3
+OUTPUT_FILE_NAME = "output_sp500_v2_mar.csv"
 
 def is_first_day_in_month(date_str, prev_date_str)
   date = DateTime.parse(date_str)
