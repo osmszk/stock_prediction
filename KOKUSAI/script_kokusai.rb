@@ -8,27 +8,18 @@ def should_buy_priod(date_str)
   return month >= 11 || month <= 4
 end
 
-csv_data = CSV.read('rawdata_kokusai.csv', headers: true)
+csv_data = CSV.read('rawdata_kokusai_with_vix.csv', headers: true)
 puts "start..."
 
-new_data = []
-# new_csv_data.push("Date,Close\n")
-csv_data.each do |data|
-  date_str = data["Date"]
-  close_str = data["Value"].sub(/,/,"")
-  hash = {"Date" => date_str,"Close" => close_str}
-  new_data.push(hash)
-end
-
-base = new_data[0]["Close"].to_f
+base = csv_data[0]["Value"].to_f
 
 File.open("output_kokusai.csv", 'w') do |file|
   file.write("Date,Value,Ratio,HALF_YEAR\n")
   i = 0
   temp_half_year = ""
   temp_ratio = 100.0
-  new_data.each do |data|
-    value = data["Close"].to_f
+  csv_data.each do |data|
+    value = data["Value"].to_f
     date_str = data["Date"]
     ratio = (value - base) / base * 100.0 + 100.0
 
