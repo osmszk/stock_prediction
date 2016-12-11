@@ -3,28 +3,27 @@ require 'date'
 
 # 1,2月のパフォーマンスを検証(1,2月は売ったほうがいいのか？)
 
-def is_first_day_in_jan(date_str, prev_date_str)
+OUTPUT_MONTH = 2
+OUTPUT_FILE_NAME = "output_sp500_v2_feb_2.csv"
+
+def is_first_day_in_month(date_str, prev_date_str)
   date = DateTime.parse(date_str)
   prev_date = DateTime.parse(prev_date_str)
-  return date.month.to_i == 1 && prev_date.month.to_i == 12
+  if OUTPUT_MONTH != 1
+    return date.month.to_i == OUTPUT_MONTH && prev_date.month.to_i == OUTPUT_MONTH - 1
+  else
+    return date.month.to_i == 1 && prev_date.month.to_i == 12
+  end
 end
 
-def is_last_day_in_jan(date_str, next_date_str)
+def is_last_day_in_month(date_str, next_date_str)
   date = DateTime.parse(date_str)
   next_date = DateTime.parse(next_date_str)
-  return date.month.to_i == 1 && next_date.month.to_i == 2
-end
-
-def is_first_day_in_feb(date_str, prev_date_str)
-  date = DateTime.parse(date_str)
-  prev_date = DateTime.parse(prev_date_str)
-  return date.month.to_i == 2 && prev_date.month.to_i == 1
-end
-
-def is_last_day_in_feb(date_str, next_date_str)
-  date = DateTime.parse(date_str)
-  next_date = DateTime.parse(next_date_str)
-  return date.month.to_i == 2 && next_date.month.to_i == 3
+  if OUTPUT_MONTH != 12
+    return date.month.to_i == OUTPUT_MONTH && next_date.month.to_i == OUTPUT_MONTH + 1
+  else
+    return date.month.to_i == 12 && next_date.month.to_i == 1
+  end
 end
 
 csv_data = CSV.read('rawdata_sp500.csv', headers: true)
@@ -40,7 +39,7 @@ csv_data.reverse_each do |data|
   new_data.push(hash)
 end
 
-File.open("output_sp500_v2_feb.csv", 'w') do |file|
+File.open(OUTPUT_FILE_NAME, 'w') do |file|
   file.write("Year,Percent\n")
   i = 0
 
@@ -52,7 +51,7 @@ File.open("output_sp500_v2_feb.csv", 'w') do |file|
 
     if i > 0
       prev_date_str = new_data[i-1]["Date"]
-      if is_first_day_in_feb(date_str,prev_date_str)
+      if is_first_day_in_month(date_str,prev_date_str)
         temp_first_value = value
         puts "first!! #{temp_first_value} at #{DateTime.parse(date_str)} "
       end
@@ -60,7 +59,7 @@ File.open("output_sp500_v2_feb.csv", 'w') do |file|
 
     if i < new_data.length - 1
       next_date_str = new_data[i+1]["Date"]
-      if is_last_day_in_feb(date_str,next_date_str)
+      if is_last_day_in_month(date_str,next_date_str)
         temp_last_value = value
         puts "last!! #{temp_last_value} at #{DateTime.parse(date_str)} "
         date = DateTime.parse(date_str)
