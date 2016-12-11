@@ -1,13 +1,7 @@
 require 'csv'
 require 'date'
 
-# 1月のパフォーマンスを検証(1月は売ったほうがいいのか？)
-
-def should_buy_priod(date_str)
-  date = DateTime.parse(date_str)
-  month = date.month.to_i
-  return month >= 11 || month <= 4
-end
+# 1,2月のパフォーマンスを検証(1,2月は売ったほうがいいのか？)
 
 def is_first_day_in_jan(date_str, prev_date_str)
   date = DateTime.parse(date_str)
@@ -21,7 +15,17 @@ def is_last_day_in_jan(date_str, next_date_str)
   return date.month.to_i == 1 && next_date.month.to_i == 2
 end
 
+def is_first_day_in_feb(date_str, prev_date_str)
+  date = DateTime.parse(date_str)
+  prev_date = DateTime.parse(prev_date_str)
+  return date.month.to_i == 2 && prev_date.month.to_i == 1
+end
 
+def is_last_day_in_feb(date_str, next_date_str)
+  date = DateTime.parse(date_str)
+  next_date = DateTime.parse(next_date_str)
+  return date.month.to_i == 2 && next_date.month.to_i == 3
+end
 
 csv_data = CSV.read('rawdata_sp500.csv', headers: true)
 
@@ -36,11 +40,7 @@ csv_data.reverse_each do |data|
   new_data.push(hash)
 end
 
-base = new_data[0]["Close"].to_f
-
-
-output_data = []
-File.open("output_sp500_v2.csv", 'w') do |file|
+File.open("output_sp500_v2_feb.csv", 'w') do |file|
   file.write("Year,Percent\n")
   i = 0
 
@@ -52,7 +52,7 @@ File.open("output_sp500_v2.csv", 'w') do |file|
 
     if i > 0
       prev_date_str = new_data[i-1]["Date"]
-      if is_first_day_in_jan(date_str,prev_date_str)
+      if is_first_day_in_feb(date_str,prev_date_str)
         temp_first_value = value
         puts "first!! #{temp_first_value} at #{DateTime.parse(date_str)} "
       end
@@ -60,7 +60,7 @@ File.open("output_sp500_v2.csv", 'w') do |file|
 
     if i < new_data.length - 1
       next_date_str = new_data[i+1]["Date"]
-      if is_last_day_in_jan(date_str,next_date_str)
+      if is_last_day_in_feb(date_str,next_date_str)
         temp_last_value = value
         puts "last!! #{temp_last_value} at #{DateTime.parse(date_str)} "
         date = DateTime.parse(date_str)
