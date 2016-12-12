@@ -2,9 +2,10 @@ require 'csv'
 require 'date'
 
 # 1,2月のパフォーマンスを検証(1,2月は売ったほうがいいのか？)
+# →各月のリターン検証へ
 
-OUTPUT_MONTH = 4
-OUTPUT_FILE_NAME = "output_sp500_v2_apr.csv"
+OUTPUT_MONTH = 12
+OUTPUT_FILE_NAME = "output_sp500_v2_12dec.csv"
 
 def is_first_day_in_month(date_str, prev_date_str)
   date = DateTime.parse(date_str)
